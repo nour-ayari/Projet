@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Mon Application RH</title>
+
+    <!-- Material Design CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="row">
+        <!-- Navbar -->
+        
+        <div class=" col s2 nav " >
+            <div class="row user-profile">
+              <img class="user-img" src="~/images/user.png"/>
+                <p >example@example.com</p>
+            </div>
+            <div class="row">
+            <ul class="section">
+                    <li class="nav-link">
+                        <span class="  material-icons">
+                            home
+                        </span>
+                        <a href="@Url.Action("Index", "Home")" >Home</a>
+                    </li>
+                    <li class="nav-link">
+                        <span class="material-icons">
+                            work
+                        </span>
+                        <a href="@Url.Action("Index", "Jobs")" >Jobs</a>
+                    </li>
+                    <li class="nav-link">
+                        <span class="material-icons">
+                            videocam
+                        </span>
+                        <a href="@Url.Action("Index", "JobApplications")" >Interviews</a>
+                    </li>
+            </ul>
+            </div>
+            <div class="row logout" >
+                <span class="material-icons">
+                logout
+                 </span>
+                <a href="" >Logout</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col s10">
+            <div class="container">
+                @RenderBody()
+            </div>
+        </div>
+       
+    </div>
+    
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

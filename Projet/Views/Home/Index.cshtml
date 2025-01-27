@@ -1,0 +1,47 @@
+﻿@model Projet.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="row home">
+
+
+
+
+    <div class="row">
+        <div class="col s10 recap">
+            <div class="recap1">
+                <div class="recap_number">@Model.OpenPositions</div>
+
+                Open Positions
+                <img class="img_recap" src="~/images/Get_A_Job Promotion.png" />
+            </div>
+            <div class="recap2">
+                <div class="recap_number">@Model.TotalApplications</div>
+                Job applications
+                <img class="img_recap" src="/images/Filling_Survey.png" />
+
+            </div>
+        </div>
+        <div class="col s2">
+
+        </div>
+    </div>
+    <div class="row">
+        <h4 class="title">Today's meetings</h4>
+        @foreach (var interview  in Model.TodayInterviews) {
+            <div class="interview_box">
+
+                </div>
+            <p>@interview.ScheduledDate</p>
+        }
+       
+    </div>
+
+    <div class="row">
+        <h4 class="title">Tomorrow's meetings</h4>
+    </div>
+
+</div>
