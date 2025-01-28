@@ -12,15 +12,15 @@ using Projet.Data;
 namespace Projet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250126204758_mm5")]
-    partial class mm5
+    [Migration("20250128200609_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
