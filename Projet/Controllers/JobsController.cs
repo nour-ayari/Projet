@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Projet.Data;
 using Projet.Models;
@@ -20,9 +21,35 @@ namespace Projet.Controllers
         }
 
         // GET: Jobs
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Jobs.ToListAsync());
+            var jobs = _context.Jobs
+                .Include(j => j.Applications)
+                    .ThenInclude(a => a.Interviews)
+                .Select(j => new JobViewModel
+                {
+                    JobId = j.JobId,
+
+                    Title = j.Title,
+
+                    DaysAgo = $"{(DateTime.Now - j.CreatedDate).Days} days ago",
+
+                    Positions = j.Positions,
+
+                    ApplicationsCount = j.Applications.Count,
+
+                    InterviewedCount = j.Applications.Count(a => a.Interviews.Any()),
+
+                    RejectedCount = j.Applications.Count(a => a.Status == "Rejected"),
+
+                    FeedbackPendingCount = j.Applications.Count(a =>
+                        a.Status == "Pending" && string.IsNullOrEmpty(a.Feedback)),
+
+                    PositionsLeft = j.Positions - j.Applications.Count(a=> a.Status == "Accepted")
+                })
+                .ToList();
+
+            return View(jobs);
         }
 
         // GET: Jobs/Details/5
@@ -54,7 +81,7 @@ namespace Projet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("JobId,Title,Positions,CreatedDate")] Job job)
+        public async Task<IActionResult> Create([Bind("JobId,Title,Positions")] Job job)
         {
             if (ModelState.IsValid)
             {

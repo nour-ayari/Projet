@@ -12,8 +12,8 @@ using Projet.Data;
 namespace Projet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250126204758_mm5")]
-    partial class mm5
+    [Migration("20250128222621_changed-job")]
+    partial class changedjob
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
