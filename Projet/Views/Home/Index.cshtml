@@ -11,7 +11,7 @@
 
 
     <div class="row">
-        <div class="col s10 recap">
+        <div class="col s8 recap">
             <div class="recap1">
                 <div class="recap_number">@Model.OpenPositions</div>
 
@@ -25,23 +25,54 @@
 
             </div>
         </div>
-        <div class="col s2">
-
+        <div class="col s4 actions">
+            <h4 class="title titleaction">Require attention</h4>
+            <div class="action">
+                You have @Model.ApplicationsToSchedule new job applications to schedule interviews
+                <div class="actionlink"> ACTION</div>
+            </div>
+            <div class="action">
+                You have @Model.InterviewsToEvalute interviews to submit evaluations.
+                <div class="actionlink"> ACTION</div>
+            </div>
+            <div class="action">
+                <div>You have @Model.JobAppToEvaluate job applications that are awaiting a response.</div>
+                <div class="actionlink"> ACTION</div>
+            </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row box">
         <h4 class="title">Today's meetings</h4>
-        @foreach (var interview  in Model.TodayInterviews) {
-            <div class="interview_box">
+        <div class="today">
+            @foreach (var interview in Model.TodayInterviews)
+            {
+                <div class="interview_box">
+                    <b><h6>@interview.JobApplication.ApplicantName </h6></b>
+                    <h6>@interview.JobApplication.Job.Title</h6>
+                    <hr />
+                    <p class="time">@interview.ScheduledDate.ToString("hh:mm tt")</p>
 
                 </div>
-            <p>@interview.ScheduledDate</p>
-        }
+            }
+        </div>
+      
        
     </div>
 
-    <div class="row">
+    <div class="row box">
         <h4 class="title">Tomorrow's meetings</h4>
+        <div class="tomorrow">
+            @foreach (var interview in Model.TomorrowInterviews)
+            {
+                <div class="interview_box">
+                    <b><h6>@interview.JobApplication.ApplicantName </h6></b>
+                    <h6>@interview.JobApplication.Job.Title</h6>
+                    <hr />
+                    <p class="time">@interview.ScheduledDate.ToString("hh:mm tt")</p>
+
+                </div>
+            }
+        </div>
     </div>
 
 </div>

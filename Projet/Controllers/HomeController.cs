@@ -29,20 +29,40 @@ namespace Projet.Controllers
 
             // Candidatures à programmer
             var applicationsToSchedule = await _context.JobApplications
-                .CountAsync(a => a.Status == "pending");
+        .Where(a => a.Status == "pending" &&
+                    !_context.Interviews.Any(i => i.JobApplicationId == a.JobApplicationId))
+        .CountAsync();
 
-            var todayInterviews = await _context.Interviews
-              
+
+            var todayInterviews = await _context.Interviews.Include(i => i.JobApplication).ThenInclude(ja => ja.Job)
+
                .Where(i => i.ScheduledDate.Date == DateTime.Now.Date)
                .ToListAsync();
-
+           var tomorrowInterviews = await _context.Interviews
+    .Include(i => i.JobApplication)
+        .ThenInclude(ja => ja.Job)
+    .Where(i => i.ScheduledDate.Date == DateTime.Now.AddDays(1).Date) // Adjust for tomorrow
+    .ToListAsync();
+            var jobAppToEvaluate = await _context.Interviews
+    .Where(i => i.ScheduledDate < DateTime.Now &&
+                i.Status == "pending" &&
+                _context.JobApplications
+                    .Any(j => j.JobApplicationId == i.JobApplicationId && j.Status == "pending"))
+    .CountAsync();
+            var interviewsToEvaluate = await _context.Interviews
+   .Where(i => i.ScheduledDate < DateTime.Now &&
+               i.Status == "pending" )
+   .CountAsync();
             var model = new HomeViewModel
             {
                 OpenPositions = openPositions,
                 TotalApplications = totalApplications,
                 TodayMeetings = todayMeetings,
                 ApplicationsToSchedule = applicationsToSchedule,
-                TodayInterviews = todayInterviews
+                TodayInterviews = todayInterviews,
+                TomorrowInterviews= tomorrowInterviews,
+                JobAppToEvaluate= jobAppToEvaluate,
+                InterviewsToEvalute= interviewsToEvaluate
 
             };
 

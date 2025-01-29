@@ -13,7 +13,7 @@ namespace Projet.Models
         public Job Job { get; set; }
 
         [Required]
-        public string ApplicantName { get; set; }
+        public string? ApplicantName { get; set; }
 
         [EmailAddress]
         public string Email { get; set; }
@@ -23,7 +23,7 @@ namespace Projet.Models
 
         public string Resume { get; set; } // Path to the saved file
         public string Feedback { get; set; }
-        public string Status { get; set; } = "Pending";//accepted or rejected or pending
+        public string Status { get; set; } = "Pending";//accepted  or pending
 
         public DateTime AppliedDate { get; set; }
         public ICollection<Interview> Interviews { get; set; }

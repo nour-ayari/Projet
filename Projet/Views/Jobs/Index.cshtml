@@ -4,44 +4,75 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<p class="pageTitle">Jobs</p>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Positions)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Positions)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.JobId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.JobId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.JobId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table ">
+    <div class="ligne1">
+        <div>
+        </div>
+
+        <div>
+            @Html.DisplayNameFor(model => model.Positions)
+        </div>
+        <div>
+            Applications
+        </div>
+        <div>
+            Interviewed
+        </div>
+        <div>
+            Rejected
+        </div>
+        <div></div>
+
+    </div>
+    <div class="jobs">
+        @foreach (var item in Model)
+        {
+            <div class="job">
+
+                <div>
+                    <h5>
+                        <span class="icon  material-icons">
+                            work
+                        </span>
+                    </h5>
+                </div>
+                <div>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </div>
+                <div>
+                    @Html.DisplayFor(modelItem => item.Positions)
+                </div>
+
+                <div>
+                    nb0
+                </div>
+                <div>
+                    nb1
+                </div>
+                <div>
+                    nb2
+                </div>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@item.JobId">
+                        <span class="  material-icons">
+                            edit
+                        </span>
+                    </a>
+                </div>
+                <div>
+                    <a asp-action="Delete" asp-route-id="@item.JobId">
+                        <span class="  material-icons">
+                            delete
+                        </span>
+                    </a>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
