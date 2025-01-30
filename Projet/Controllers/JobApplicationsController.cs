@@ -8,6 +8,8 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Projet.Data;
+using System.Net.Mail;
+using Microsoft.Build.Evaluation;
 
 namespace Projet.Controllers
 {
@@ -48,209 +50,128 @@ namespace Projet.Controllers
             return View(jobApplication);
         }
 
-        // GET: JobApplication/Create
-        public IActionResult Create()
-        {
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId");
-            return View();
-        }
-
-        // Action for scheduling an interview
-        public IActionResult Schedule(int id)
+        // Schedule Interview - Create a new Interview with a scheduled date and meeting link
+        public async Task<IActionResult> Schedule(int id)
         {
             var jobApplication = _context.JobApplications
-                .Include(j => j.Job)
-                .FirstOrDefault(j => j.JobApplicationId == id);
+                .FirstOrDefault(ja => ja.JobApplicationId == id);
 
-            if (jobApplication == null)
+            if (jobApplication == null || jobApplication.Status != "Pending")
             {
-                return NotFound();  
+                return NotFound();
             }
-            return View(jobApplication);  
+
+            var viewModel = new ScheduleInterviewViewModel
+            {
+                JobApplicationId = jobApplication.JobApplicationId
+            };
+
+            return View(viewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Schedule(ScheduleInterviewViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var jobApplication = _context.JobApplications
+                .FirstOrDefault(ja => ja.JobApplicationId == model.JobApplicationId);
+
+            if (jobApplication == null || jobApplication.Status != "Pending")
+            {
+                return NotFound();
+            }
+
+            // Change the status of the job application to 'Scheduled'
+            jobApplication.Status = "Scheduled";
+            _context.SaveChanges();
+
+            // Create a new interview
+            var interview = new Interview
+            {
+                JobApplicationId = jobApplication.JobApplicationId,
+                ScheduledDate = model.InterviewDate,
+                Status = "Scheduled",
+                Feedback = string.Empty,
+                meet = model.meet
+            };
+
+            _context.Interviews.Add(interview);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index"); 
         }
 
-        // POST: JobApplication/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(JobApplication jobApplication, IFormFile resume)
+        /*private async Task SendInterviewEmailAsync(string applicantEmail, DateTime interviewDate, string meetingLink)
         {
-            if (ModelState.IsValid)
+            var subject = "Your Interview has been Scheduled";
+            var body = $@"
+            Dear Applicant,
+
+            We are pleased to inform you that your interview has been scheduled. Here are the details:
+
+            Interview Date: {interviewDate:yyyy-MM-dd HH:mm}
+            Meeting Link: {meetingLink}
+
+            Please ensure that you join the meeting on time.
+
+            Best regards,
+            The Recruitment Team
+        ";
+
+            using (var message = new MailMessage())
             {
-                if (resume != null && resume.Length > 0)
+                var mail = "servicerhdotnet@gmail.com";
+                message.To.Add(applicantEmail);
+                message.From = new MailAddress(mail);
+                message.Subject = subject;
+                message.Body = body;
+                message.IsBodyHtml = false;
+
+                using (var smtpClient = new SmtpClient("smtp-mail.outlook.com"))
                 {
-                    // Create the uploads folder if it doesn't exist
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    // Generate a unique file name and save the file
-                    string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(resume.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await resume.CopyToAsync(fileStream);
-                    }
-
-                    jobApplication.Resume = "/uploads/" + uniqueFileName;
+                    smtpClient.Port = 587; 
+                    smtpClient.Credentials = new System.Net.NetworkCredential("servicerhdotnet@gmail.com", "Projet.Net");
+                    smtpClient.EnableSsl = true;
+                    await smtpClient.SendMailAsync(message);
                 }
-
-                _context.Add(jobApplication);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
+        }*/
 
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "Title", jobApplication.JobId);
-            return View(jobApplication);
-        }
-
-        [HttpPost]
-        public IActionResult ScheduleInterview(Interview interview)
-        {
-            if (ModelState.IsValid)
+        // Reject - Change status to rejected
+        public IActionResult Reject(int id)
             {
                 var jobApplication = _context.JobApplications
-                    .FirstOrDefault(j => j.JobApplicationId == interview.JobApplicationId);
+                    .FirstOrDefault(ja => ja.JobApplicationId == id);
 
                 if (jobApplication != null)
                 {
-                    _context.Interviews.Add(interview);
+                    jobApplication.Status = "Rejected";
                     _context.SaveChanges();
+                }
 
-                    jobApplication.Status = "Interview Scheduled";
+                return RedirectToAction(nameof(Index));
+            }
+   
+
+        // Accept - Change status to accepted
+        public IActionResult Accept(int id)
+            {
+                var jobApplication = _context.JobApplications
+                    .FirstOrDefault(ja => ja.JobApplicationId == id);
+
+                if (jobApplication != null && jobApplication.Status == "Interviewed")
+                {
+                    jobApplication.Status = "Accepted";
                     _context.SaveChanges();
-
-                    return RedirectToAction("Details", new { id = interview.JobApplicationId }); // Redirect to details page of the job application
-                }
-            }
-
-            return View(interview);          }
-
-
-        // GET: JobApplication/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var jobApplication = await _context.JobApplications.FindAsync(id);
-            if (jobApplication == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId", jobApplication.JobId);
-            return View(jobApplication);
-        }
-
-        // POST: JobApplication/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, JobApplication jobApplication, IFormFile resume)
-        {
-            if (id != jobApplication.JobApplicationId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (resume != null && resume.Length > 0)
-                    {
-                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                        Directory.CreateDirectory(uploadsFolder);
-
-                        string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(resume.FileName);
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await resume.CopyToAsync(fileStream);
-                        }
-
-                        // Delete the old file if exists
-                        if (!string.IsNullOrEmpty(jobApplication.Resume))
-                        {
-                            string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, jobApplication.Resume.TrimStart('/'));
-                            if (System.IO.File.Exists(oldFilePath))
-                            {
-                                System.IO.File.Delete(oldFilePath);
-                            }
-                        }
-
-                        jobApplication.Resume = "/uploads/" + uniqueFileName;
-                    }
-
-                    _context.Update(jobApplication);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!JobApplicationExists(jobApplication.JobApplicationId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
                 }
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "JobId", jobApplication.JobId);
-            return View(jobApplication);
-        }
-
-        // GET: JobApplications/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var jobApplication = await _context.JobApplications
-                .Include(j => j.Job)
-                .FirstOrDefaultAsync(m => m.JobApplicationId == id);
-            if (jobApplication == null)
-            {
-                return NotFound();
-            }
-
-            return View(jobApplication);
-        }
-
-        // POST: JobApplications/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var jobApplication = await _context.JobApplications.FindAsync(id);
-            if (jobApplication != null)
-            {
-                if (!string.IsNullOrEmpty(jobApplication.Resume))
-                {
-                    string filePath = Path.Combine(_webHostEnvironment.WebRootPath, jobApplication.Resume.TrimStart('/'));
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
-                }
-
-                _context.JobApplications.Remove(jobApplication);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool JobApplicationExists(int id)
-        {
-            return _context.JobApplications.Any(e => e.JobApplicationId == id);
+            
         }
     }
-}
+

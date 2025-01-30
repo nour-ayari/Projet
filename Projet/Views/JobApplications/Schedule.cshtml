@@ -1,37 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model Projet.Models.JobApplication
+﻿@model Projet.Models.ScheduleInterviewViewModel
+
 
 @{
     ViewData["Title"] = "Schedule Interview";
 }
 
-<h2>Schedule Interview for @Model.ApplicantName</h2>
+<h2>Schedule Interview</h2>
 
-<form method="post" asp-action="ScheduleInterview">
+<form asp-action="Schedule" method="post">
+    <input type="hidden" asp-for="JobApplicationId" />
+
     <div class="form-group">
-        <label for="ScheduledDate">Scheduled Date</label>
-        <input type="datetime-local" class="form-control" id="ScheduledDate" name="ScheduledDate" required />
+        <label asp-for="InterviewDate" class="control-label"></label>
+        <input asp-for="InterviewDate" class="form-control" />
+        <span asp-validation-for="InterviewDate" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label for="Feedback">Feedback</label>
-        <textarea class="form-control" id="Feedback" name="Feedback"></textarea>
+        <label asp-for="meet" class="control-label"></label>
+        <input asp-for="meet" class="form-control" />
+        <span asp-validation-for="meet" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label for="Status">Interview Status</label>
-        <select class="form-control" id="Status" name="Status">
-            <option value="Pending">Pending</option>
-            <option value="Scheduled">Scheduled</option>
-            <option value="Completed">Completed</option>
-        </select>
+        <input type="submit" value="Schedule" class="btn btn-primary" />
     </div>
-
-    <input type="hidden" name="JobApplicationId" value="@Model.JobApplicationId" />
-
-    <button type="submit" class="btn btn-primary">Save Interview</button>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
