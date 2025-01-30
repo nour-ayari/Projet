@@ -43,9 +43,21 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.InterviewId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InterviewId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InterviewId">Delete</a>
+                @if (item.Status == "Scheduled")
+                {
+                    if (item.ScheduledDate < DateTime.Now)
+                    {
+                        // Interview is scheduled and the date is in the past
+                        <a asp-action="ChangeDate" asp-route-id="@item.InterviewId" class="btn btn-warning">Change Date</a>
+                        <a asp-action="CancelInterview" asp-route-id="@item.InterviewId" class="btn btn-danger">Cancel</a>
+                    }
+                    else
+                    {
+                        // Interview is scheduled and the date is in the future
+                        <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-success">Provide Feedback</a>
+                    }
+                }
+              
             </td>
         </tr>
 }
