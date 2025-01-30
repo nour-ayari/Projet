@@ -7,7 +7,7 @@ namespace Projet.Models
         public int JobId { get; set; }
         public string Title { get; set; }
         public int Positions { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Today;
         public ICollection<JobApplication> Applications { get; set; }= new List<JobApplication>();
     }
 }

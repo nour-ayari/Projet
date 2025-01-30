@@ -4,40 +4,138 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <div class="header">
+        <h1>Create Job</h1>
+        <a asp-action="Index" class="btn">
+            <i class="material-icons">arrow_back</i> Back to List
+        </a>
+    </div>
 
-<h4>Job</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    <div class="card">
+        <h4>Job Details</h4>
+        <hr />
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
+                <label asp-for="Title" class="form-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Positions" class="control-label"></label>
+                <label asp-for="Positions" class="form-label"></label>
                 <input asp-for="Positions" class="form-control" />
                 <span asp-validation-for="Positions" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="material-icons">save</i> Create
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .btn {
+        display: flex;
+        align-items: center;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn i {
+        margin-right: 5px;
+    }
+
+    .card {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h4 {
+        margin-top: 0;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-primary i {
+        margin-right: 5px;
+    }
+
+    .alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+    }
+</style>

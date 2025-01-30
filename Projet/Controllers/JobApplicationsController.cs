@@ -55,6 +55,20 @@ namespace Projet.Controllers
             return View();
         }
 
+        // Action for scheduling an interview
+        public IActionResult Schedule(int id)
+        {
+            var jobApplication = _context.JobApplications
+                .Include(j => j.Job)
+                .FirstOrDefault(j => j.JobApplicationId == id);
+
+            if (jobApplication == null)
+            {
+                return NotFound();  
+            }
+            return View(jobApplication);  
+        }
+
         // POST: JobApplication/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -87,10 +101,32 @@ namespace Projet.Controllers
             ViewData["JobId"] = new SelectList(_context.Jobs, "JobId", "Title", jobApplication.JobId);
             return View(jobApplication);
         }
-    
 
-    // GET: JobApplication/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+        [HttpPost]
+        public IActionResult ScheduleInterview(Interview interview)
+        {
+            if (ModelState.IsValid)
+            {
+                var jobApplication = _context.JobApplications
+                    .FirstOrDefault(j => j.JobApplicationId == interview.JobApplicationId);
+
+                if (jobApplication != null)
+                {
+                    _context.Interviews.Add(interview);
+                    _context.SaveChanges();
+
+                    jobApplication.Status = "Interview Scheduled";
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Details", new { id = interview.JobApplicationId }); // Redirect to details page of the job application
+                }
+            }
+
+            return View(interview);          }
+
+
+        // GET: JobApplication/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {

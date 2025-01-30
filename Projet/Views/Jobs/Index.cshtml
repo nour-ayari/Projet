@@ -1,78 +1,121 @@
-﻿@model IEnumerable<Projet.Models.Job>
+﻿@model IEnumerable<Projet.Models.JobViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Jobs";
 }
+<main class="content">
+    <header class="header">
+        <h1>Jobs</h1>
+        <a asp-action="Create" class="btn new-post"> <i class="material-icons">add</i></a>
+    </header>
 
-<p class="pageTitle">Jobs</p>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<div class="table ">
-    <div class="ligne1">
-        <div>
-        </div>
-
-        <div>
-            @Html.DisplayNameFor(model => model.Positions)
-        </div>
-        <div>
-            Applications
-        </div>
-        <div>
-            Interviewed
-        </div>
-        <div>
-            Rejected
-        </div>
-        <div></div>
-
+    <div class="job-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Positions Left</th>
+                    <th>Applications</th>
+                    <th>Interviewed</th>
+                    <th>Rejected</th>
+                    <th>Feedback Pending</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td> <i class="material-icons job-icon">work</i> @item.Title <span class="days-ago">@item.DaysAgo</span> </td>
+                        <td class="center">@item.PositionsLeft</td>
+                        <td class="center">@item.ApplicationsCount</td>
+                        <td class="center">@item.InterviewedCount</td>
+                        <td class="center">@item.RejectedCount</td>
+                        <td class="center">@item.FeedbackPendingCount</td>
+                        <td class="actions">
+                            <a asp-action="Details" asp-route-id="@item.JobId" class="icon-btn"> <i class="material-icons">visibility</i></a>
+                            <a asp-action="Edit" asp-route-id="@item.JobId" class="icon-btn"> <i class="material-icons">edit</i></a>
+                            <a asp-action="Delete" asp-route-id="@item.JobId" class="icon-btn delete"> <i class="material-icons">delete</i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-    <div class="jobs">
-        @foreach (var item in Model)
-        {
-            <div class="job">
+</main>
 
-                <div>
-                    <h5>
-                        <span class="icon  material-icons">
-                            work
-                        </span>
-                    </h5>
-                </div>
-                <div>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </div>
-                <div>
-                    @Html.DisplayFor(modelItem => item.Positions)
-                </div>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    .content {
+        flex: 1;
+        padding: 20px;
+        background: #F9FAFC;
+    }
 
-                <div>
-                    nb0
-                </div>
-                <div>
-                    nb1
-                </div>
-                <div>
-                    nb2
-                </div>
-                <div>
-                    <a asp-action="Edit" asp-route-id="@item.JobId">
-                        <span class="  material-icons">
-                            edit
-                        </span>
-                    </a>
-                </div>
-                <div>
-                    <a asp-action="Delete" asp-route-id="@item.JobId">
-                        <span class="  material-icons">
-                            delete
-                        </span>
-                    </a>
-                </div>
+    .header {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+    }
 
-            </div>
+    .new-post {
+        background: #ff9800;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+    }
+
+        .new-post i {
+            margin-right: 5px;
         }
-    </div>
-</div>
+
+    .job-table {
+        margin-top: 20px;
+        background: white;
+        padding: 16px;
+        border-radius: 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .icon-btn {
+        text-decoration: none;
+        color: #1976d2;
+        padding: 6px;
+    }
+
+        .icon-btn.delete {
+            color: #d32f2f;
+        }
+
+    .job-icon {
+        color: #757575;
+        margin-right: 8px;
+    }
+
+    .days-ago {
+        color: #757575;
+        font-size: 12px;
+    }
+</style>
