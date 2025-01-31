@@ -12,7 +12,7 @@ namespace Projet.Data
         {
 
         }
-        // Vos DbSets pour les autres modèles
+        
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<Interview> Interviews { get; set; }
