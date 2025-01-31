@@ -24,12 +24,7 @@ namespace Projet.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: JobApplications
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.JobApplications.Include(j => j.Job);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        
 
         // GET: JobApplications/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,6 +43,24 @@ namespace Projet.Controllers
             }
 
             return View(jobApplication);
+        }
+        public IActionResult Index(string filter, string jobname)
+        {
+            var jobApplications = _context.JobApplications.Include(ja => ja.Job).ToList();
+
+            if (!string.IsNullOrEmpty(jobname))
+            {
+                jobApplications = jobApplications.Where(ja => ja.Job.Title == Uri.UnescapeDataString(jobname)).ToList();
+            }
+
+            if (filter == "schedule")
+            {
+                jobApplications = jobApplications.Where(ja => ja.Status == "Pending").ToList();
+            }
+
+            ViewBag.JobTitles = _context.Jobs.Select(j => j.Title).Distinct().ToList();
+
+            return View(jobApplications);
         }
 
         // Schedule Interview - Create a new Interview with a scheduled date and meeting link

@@ -33,7 +33,9 @@
                         <td class="center">@item.RejectedCount</td>
                         <td class="center">@item.FeedbackPendingCount</td>
                         <td class="actions">
-                            <a asp-action="Details" asp-route-id="@item.JobId" class="icon-btn"> <i class="material-icons">visibility</i></a>
+                            <a asp-action="Index" asp-controller="JobApplications" asp-route-jobname="@Uri.EscapeDataString(item.Title)" class="icon-btn">
+                                <i class="material-icons">visibility</i>
+                            </a>
                             <a asp-action="Edit" asp-route-id="@item.JobId" class="icon-btn"> <i class="material-icons">edit</i></a>
                             <a asp-action="Delete" asp-route-id="@item.JobId" class="icon-btn delete"> <i class="material-icons">delete</i></a>
                         </td>

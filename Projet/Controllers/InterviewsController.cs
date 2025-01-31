@@ -17,13 +17,25 @@ namespace Projet.Controllers
             _context = context;
         }
         // GET: Interviews
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string filter)
         {
-            var interviews = await _context.Interviews
-                .Include(i => i.JobApplication)
-                .ToListAsync();
+            var interviews = _context.Interviews
+                .Include(i => i.JobApplication) 
+                .AsQueryable(); 
 
-            return View(interviews);
+            switch (filter)
+            {
+                case "feedback":
+                    interviews = interviews.Where(i => i.Status == "Interviewed");
+                    break;
+                case "decision":
+                    interviews = interviews.Where(i => i.Status == "Need Decision");
+                    break;
+                default:
+                    break;
+            }
+
+            return View(interviews.ToList());
         }
 
 
@@ -118,7 +130,6 @@ namespace Projet.Controllers
 
             interview.Status = "Cancelled";
             var jobApplication = interview.JobApplication;
-            jobApplication.Status = "Interview Cancelled";
 
             _context.SaveChanges();
 

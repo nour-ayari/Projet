@@ -78,11 +78,7 @@
                                 <button type="submit" class="btn btn-info btn-sm">Mark as Interviewed</button>
                             </form>
                         }
-                        else
-                        {
-                            <!-- Interview is scheduled and the date is in the future -->
-                            <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-success btn-sm">Provide Feedback</a>
-                        }
+                       
                     }
                     else if (item.Status == "Interviewed")
                     {

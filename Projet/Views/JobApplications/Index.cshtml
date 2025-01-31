@@ -2,65 +2,95 @@
 
 @{
     ViewData["Title"] = "Job Applications";
+    var filter = Context.Request.Query["filter"];
+    var jobName = Context.Request.Query["jobName"];
+    var jobId = Context.Request.Query["jobId"];
 }
 
 <h1>Job Applications</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Job Title</th>
-            <th>Applicant Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Resume</th>
-            <th>Feedback</th>
-            <th>Status</th>
-            <th>Applied Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Job.Title</td>
-                <td>@item.ApplicantName</td>
-                <td>@item.Email</td>
-                <td>@item.PhoneNumber</td>
-                <td><a href="@item.Resume" target="_blank">Download</a></td>
-                <td>@item.Feedback</td>
-                <td>@item.Status</td>
-                <td>@item.AppliedDate.ToString("yyyy-MM-dd")</td>
-                <td>
-                    @if ((item.Status == "Pending") | (item.Status == "Interview Cancelled"))
+<div class="mb-3">
+    <form method="get" asp-action="Index">
+        <div class="form-group">
+            <label for="jobName">Filter by Job:</label>
+            <select id="jobName" name="jobName" class="form-control" onchange="this.form.submit()" style="width: auto;">
+                <option value="View All">View All</option>
+                @foreach (var title in ViewBag.JobTitles)
+                {
+                    <option value="@title" selected="@(title == ViewBag.SelectedJobName ? "selected" : null)">@title</option>
+                }
+            </select>
+        </div>
+        <input type="hidden" name="filter" value="@filter" />
+        <input type="hidden" name="jobId" value="@jobId" />
+    </form>
+</div>
 
-                    {
-                        <!-- Schedule Interview button -->
-                        <a asp-action="Schedule" asp-route-id="@item.JobApplicationId" class="btn btn-primary btn-sm">Schedule Interview</a>
-                        <span>|</span>
-                        <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
-                    }
-                    else if (item.Status == "Scheduled")
-                    {
-                        <!-- View Interview Details button -->
-                        <a asp-action="Details" asp-controller="Interviews" asp-route-id="@item.JobApplicationId" class="btn btn-info btn-sm">View Interview</a>
-                        <span>|</span>
-                        <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
-                    }
-                    
-                    else if (item.Status == "Rejected")
-                    {
-                        <!-- Rejected status (no buttons) -->
-                        <span class="text-danger">Rejected</span>
-                    }
-                    else if (item.Status == "Accepted")
-                    {
-                        <!-- Accepted status (no buttons) -->
-                        <span class="text-success">Accepted</span>
-                    }
-                </td>
+@if (!string.IsNullOrEmpty(filter))
+{
+    <div class="mb-3">
+        <a href="/JobApplications" class="btn btn-secondary">Show All Job Applications</a>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        There are no job applications yet for this job.
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Applicant Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Resume</th>
+                <th>Feedback</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Job.Title</td>
+                    <td>@item.ApplicantName</td>
+                    <td>@item.Email</td>
+                    <td>@item.PhoneNumber</td>
+                    <td><a href="@item.Resume" target="_blank">Download</a></td>
+                    <td>@item.Feedback</td>
+                    <td>@item.Status</td>
+                    <td>@item.AppliedDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @if ((item.Status == "Pending") | (item.Status == "Interview Cancelled"))
+                        {
+                            <a asp-action="Schedule" asp-route-id="@item.JobApplicationId" class="btn btn-primary btn-sm">Schedule Interview</a>
+                            <span>|</span>
+                            <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
+                        }
+                        else if (item.Status == "Scheduled")
+                        {
+                            <a asp-action="Details" asp-controller="Interviews" asp-route-id="@item.JobApplicationId" class="btn btn-info btn-sm">View Interview</a>
+                            <span>|</span>
+                            <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
+                        }
+                        else if (item.Status == "Rejected")
+                        {
+                            <span class="text-danger">Rejected</span>
+                        }
+                        else if (item.Status == "Accepted")
+                        {
+                            <span class="text-success">Accepted</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
