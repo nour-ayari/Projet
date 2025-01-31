@@ -4,11 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Interviews</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -24,43 +21,88 @@
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-         
-            <td>
-                @Html.DisplayFor(modelItem => item.JobApplication.ApplicantName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScheduledDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Feedback)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @if (item.Status == "Scheduled")
-                {
-                    if (item.ScheduledDate < DateTime.Now)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JobApplication.ApplicantName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ScheduledDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Feedback)
+                </td>
+                <td>
+                    @if (item.Status == "Accepted")
                     {
-                        // Interview is scheduled and the date is in the past
-                        <a asp-action="ChangeDate" asp-route-id="@item.InterviewId" class="btn btn-warning">Change Date</a>
-                        <a asp-action="CancelInterview" asp-route-id="@item.InterviewId" class="btn btn-danger">Cancel</a>
+                        <span class="text-success">@item.Status</span>
+                    }
+                    else if (item.Status == "Rejected")
+                    {
+                        <span class="text-danger">@item.Status</span>
+                    }
+                    else if (item.Status == "Need Decision")
+                    {
+                        <span class="text-warning">@item.Status</span>
+                    }
+                    else if ((item.Status == "Pending") | (item.Status == "Interview Cancelled"))
+                    {
+                        <span class=" text-primary">@item.Status</span>
                     }
                     else
                     {
-                        // Interview is scheduled and the date is in the future
-                        <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-success">Provide Feedback</a>
+                        <span class="text-secondary">@item.Status</span>
                     }
-                }
-              
-            </td>
-        </tr>
-}
+                </td>
+                <td>
+                    <!-- Link to Interview Details -->
+                    <a asp-action="InterviewDetails" asp-route-id="@item.InterviewId" class="btn btn-info btn-sm" title="View Details">
+                        Details
+                    </a>
+
+                    @if (item.Status == "Scheduled")
+                    {
+                        if (item.ScheduledDate <= DateTime.Now)
+                        {
+                            <!-- Interview is scheduled and the date is in the past -->
+                            <a asp-action="ChangeDate" asp-route-id="@item.InterviewId" class="btn btn-warning btn-sm">Change Date</a>
+                            <form asp-action="Cancel" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                            <form asp-action="MarkAsInterviewed" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-info btn-sm">Mark as Interviewed</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <!-- Interview is scheduled and the date is in the future -->
+                            <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-success btn-sm">Provide Feedback</a>
+                        }
+                    }
+                    else if (item.Status == "Interviewed")
+                    {
+                        <!-- Provide Feedback button -->
+                        <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-success btn-sm">Provide Feedback</a>
+                    }
+                    else if (item.Status == "Need Decision")
+                    {
+                        <!-- Accept button -->
+                        <form asp-action="Accept" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                        </form>
+
+                        <!-- Reject button -->
+                        <form asp-action="Reject" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

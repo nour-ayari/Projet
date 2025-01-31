@@ -1,78 +1,76 @@
-﻿@model Projet.Models.HomeViewModel
-
-@{
-    ViewData["Title"] = "Home Page";
-}
-
-
-<div class="row home">
-
-
-
-
+﻿<div class="home" style="margin-top:50px;">
+    <!-- First Row: Updates and Actions (50% each) -->
     <div class="row">
-        <div class="col s8 recap">
+        <div class="col s6 recap">
             <div class="recap1">
                 <div class="recap_number">@Model.OpenPositions</div>
-
-                Open Positions
+                <div style="margin-top:20px;">
+                    Open Positions
+                </div>
                 <img class="img_recap" src="~/images/Get_A_Job Promotion.png" />
             </div>
             <div class="recap2">
                 <div class="recap_number">@Model.TotalApplications</div>
+                <div style="margin-top:20px;">
                 Job applications
+                </div>
                 <img class="img_recap" src="/images/Filling_Survey.png" />
-
             </div>
         </div>
-        <div class="col s4 actions">
-            <h4 class="title titleaction">Require attention</h4>
-            <div class="action">
-                You have @Model.ApplicationsToSchedule new job applications to schedule interviews
-                <div class="actionlink"> ACTION</div>
-            </div>
-            <div class="action">
-                You have @Model.InterviewsToEvalute interviews to submit evaluations.
-                <div class="actionlink"> ACTION</div>
-            </div>
-            <div class="action">
-                <div>You have @Model.JobAppToEvaluate job applications that are awaiting a response.</div>
-                <div class="actionlink"> ACTION</div>
-            </div>
+
+        <div class="col s6 actions">
+    <h4 class="title titleaction">Require attention</h4>
+    <div class="action">
+        You have @Model.ApplicationsToSchedule new job applications to schedule interviews
+        <div class="actionlink">
+            <a href="/JobApplications?filter=schedule">ACTION</a>
         </div>
     </div>
+    <div class="action">
+        You have @Model.InterviewsToEvalute interviews to submit evaluations.
+        <div class="actionlink">
+            <a href="/Interviews?filter=feedback">ACTION</a>
+        </div>
+    </div>
+    <div class="action">
+        <div>You have @Model.JobAppToEvaluate job applications that are awaiting a response.</div>
+        <div class="actionlink">
+            <a href="/Interviews?filter=decision">ACTION</a>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <!-- Second Row: Today's Meetings -->
     <div class="row box">
         <h4 class="title">Today's meetings</h4>
         <div class="today">
             @foreach (var interview in Model.TodayInterviews)
             {
-                <div class="interview_box">
-                    <b><h6>@interview.JobApplication.ApplicantName </h6></b>
+                <a href="@Url.Action("InterviewDetails", "Interviews", new { id = interview.InterviewId })" class="interview_box">
+                    <b><h6>@interview.JobApplication.ApplicantName</h6></b>
                     <h6>@interview.JobApplication.Job.Title</h6>
                     <hr />
                     <p class="time">@interview.ScheduledDate.ToString("hh:mm tt")</p>
-
-                </div>
+                </a>
             }
         </div>
-      
-       
     </div>
 
+    <!-- Third Row: Tomorrow's Meetings -->
     <div class="row box">
         <h4 class="title">Tomorrow's meetings</h4>
         <div class="tomorrow">
-            @foreach (var interview in Model.TomorrowInterviews)
+                       @foreach (var interview in Model.TomorrowInterviews)
             {
-                <div class="interview_box">
-                    <b><h6>@interview.JobApplication.ApplicantName </h6></b>
+                <a href="@Url.Action("InterviewDetails", "Interviews", new { id = interview.InterviewId})" class="interview_box">
+                    <b><h6>@interview.JobApplication.ApplicantName</h6></b>
                     <h6>@interview.JobApplication.Job.Title</h6>
                     <hr />
                     <p class="time">@interview.ScheduledDate.ToString("hh:mm tt")</p>
-
-                </div>
+                </a>
             }
+
         </div>
     </div>
-
 </div>

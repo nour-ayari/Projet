@@ -106,7 +106,6 @@ namespace Projet.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        
         public IActionResult Cancel(int id)
         {
             var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
@@ -115,12 +114,86 @@ namespace Projet.Controllers
                 return NotFound();
             }
 
+            // Update the interview status to "Cancelled"
+
             interview.Status = "Cancelled";
+            var jobApplication = interview.JobApplication;
+            jobApplication.Status = "Interview Cancelled";
+
             _context.SaveChanges();
 
-            // Return the same view (no redirect)
-            return View("Index", _context.Interviews.ToList());
+            // Redirect to the Index action to refresh the page
+            return RedirectToAction("Index");
         }
+        public IActionResult InterviewDetails(int id)
+        {
+            var interview = _context.Interviews
+                .Include(i => i.JobApplication)
+                .ThenInclude(ja => ja.Job)
+                .FirstOrDefault(i => i.InterviewId== id);
 
+            if (interview == null)
+            {
+                return NotFound(); 
+            }
+
+            return View(interview); 
+        }
+        [HttpPost]
+        public IActionResult MarkAsInterviewed(int id)
+        {
+            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            if (interview == null || interview.Status != "Scheduled")
+            {
+                return NotFound();
+            }
+
+            // Update the interview status to "Interviewed"
+            interview.Status = "Interviewed";
+            var jobApplication = interview.JobApplication;
+            jobApplication.Status = "Interviewed";
+            _context.SaveChanges();
+
+            // Redirect to the Index page
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult Accept(int id)
+        {
+            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            if (interview == null || interview.Status != "Need Decision")
+            {
+                return NotFound();
+            }
+
+            // Update the interview status to "Accepted"
+            interview.Status = "Accepted";
+            var jobApplication = interview.JobApplication;
+            jobApplication.Status = "Accepted";
+            _context.SaveChanges();
+
+            // Redirect to the Index page
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult Reject(int id)
+        {
+            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            if (interview == null || interview.Status != "Need Decision")
+            {
+                return NotFound();
+            }
+
+            // Update the interview status to "Rejected"
+            interview.Status = "Rejected";
+            var jobApplication = interview.JobApplication;
+            jobApplication.Status = "Rejected";
+            _context.SaveChanges();
+
+            // Redirect to the Index page
+            return RedirectToAction("Index");
+        }
     }
-}
+
+}    
+       

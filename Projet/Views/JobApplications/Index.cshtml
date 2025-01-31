@@ -33,32 +33,31 @@
                 <td>@item.Status</td>
                 <td>@item.AppliedDate.ToString("yyyy-MM-dd")</td>
                 <td>
-                    @if (item.Status == "Pending")
-                    {
-                            <a asp-action="Schedule" asp-route-id="@item.JobApplicationId" class="btn btn-primary btn-sm">Schedule Interview</a> 
-                            <span>|</span>
-                            <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
-                    }
-                    else if (item.Status == "Scheduled")
-                    {
-                         <a asp-action="Details" asp-controller="Interviews" asp-route-id="@item.JobApplicationId" class="btn btn-info btn-sm">View Interview</a>
-                            <span>|</span>
+                    @if ((item.Status == "Pending") | (item.Status == "Interview Cancelled"))
 
-                        <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
-                    }
-                     else if (item.Status == "Need Decision")
                     {
-                        <a asp-action="Accept" asp-route-id="@item.JobApplicationId" class="btn btn-success btn-sm">Accept</a>
+                        <!-- Schedule Interview button -->
+                        <a asp-action="Schedule" asp-route-id="@item.JobApplicationId" class="btn btn-primary btn-sm">Schedule Interview</a>
                         <span>|</span>
                         <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
                     }
+                    else if (item.Status == "Scheduled")
+                    {
+                        <!-- View Interview Details button -->
+                        <a asp-action="Details" asp-controller="Interviews" asp-route-id="@item.JobApplicationId" class="btn btn-info btn-sm">View Interview</a>
+                        <span>|</span>
+                        <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
+                    }
+                    
                     else if (item.Status == "Rejected")
                     {
-                            <span class="text-danger">Rejected</span>
+                        <!-- Rejected status (no buttons) -->
+                        <span class="text-danger">Rejected</span>
                     }
                     else if (item.Status == "Accepted")
                     {
-                            <span class="text-success">Accepted</span>
+                        <!-- Accepted status (no buttons) -->
+                        <span class="text-success">Accepted</span>
                     }
                 </td>
             </tr>

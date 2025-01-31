@@ -1,0 +1,86 @@
+﻿@model Projet.Models.Interview
+
+<h2>Interview Details</h2>
+
+<div>
+    <h3>Interview Information</h3>
+    <p><strong>Date:</strong> @Model.ScheduledDate.ToString("MMMM dd, yyyy")</p>
+    <p><strong>Time:</strong> @Model.ScheduledDate.ToString("hh:mm tt")</p>
+    <p>
+        <strong>Meeting Link:</strong>
+        <a href="@Model.meet" target="_blank">Join Meeting</a>
+    </p>
+</div>
+
+<div>
+    <h3>Job Application Details</h3>
+    <p><strong>Applicant Name:</strong> @Model.JobApplication.ApplicantName</p>
+    <p><strong>Applicant Email:</strong> @Model.JobApplication.Email</p>
+    <p>
+        <strong>Resume:</strong>
+        <a href="@Model.JobApplication.Resume" target="_blank">Download Resume</a>
+    </p>
+    <p><strong>Job Title:</strong> @Model.JobApplication.Job.Title</p>
+</div>
+
+<div>
+    <h3>Interview Notes</h3>
+    <p>@Model.Feedback </p>
+</div>
+
+<!-- Actions Section -->
+<div>
+    @if (Model.Status == "Scheduled")
+    {
+        <!-- Change Date button -->
+        <a asp-action="ChangeDate" asp-route-id="@Model.InterviewId" class="btn btn-warning" data-toggle="tooltip" title="Change the interview date">
+            <i class="fas fa-calendar-alt"></i> Change Date
+        </a>
+
+        <!-- Cancel button -->
+        <form asp-action="Cancel" asp-route-id="@Model.InterviewId" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </form>
+
+        <!-- Check if the interview date and time have passed -->
+        @if (Model.ScheduledDate <= DateTime.Now)
+        {
+            <!-- Update status to "Interviewed" -->
+            <form asp-action="MarkAsInterviewed" asp-route-id="@Model.InterviewId" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-info">
+                    <i class="fas fa-check"></i> Mark as Interviewed
+                </button>
+            </form>
+        }
+    }
+    else if (Model.Status == "Interviewed")
+    {
+        <!-- Provide Feedback button -->
+        <a asp-action="GiveFeedback" asp-route-id="@Model.InterviewId" class="btn btn-success" data-toggle="tooltip" title="Provide feedback for the interview">
+            <i class="fas fa-comment"></i> Provide Feedback
+        </a>
+    }
+    else if (Model.Status == "Need Decision")
+    {
+        <!-- Accept button -->
+        <form asp-action="Accept" asp-route-id="@Model.InterviewId" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-check"></i> Accept
+            </button>
+        </form>
+
+        <!-- Reject button -->
+        <form asp-action="Reject" asp-route-id="@Model.InterviewId" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-times"></i> Reject
+            </button>
+        </form>
+    }
+</div>
+
+<!-- Back to Interviews List button -->
+<a href="@Url.Action("Index", "Interviews")" class="btn btn-primary" data-toggle="tooltip" title="Return to the interviews list">
+    <i class="fas fa-arrow-left"></i> Back to Interviews
+</a>
