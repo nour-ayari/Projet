@@ -81,7 +81,7 @@ namespace Projet.Controllers
         public IActionResult GiveFeedback(int id)
         {
             var interview = _context.Interviews.Include(i => i.JobApplication).FirstOrDefault(i => i.InterviewId == id);
-            if (interview == null || interview.Status != "Scheduled")
+            if (interview == null || interview.Status != "Interviewed")
             {
                 return NotFound();
             }
@@ -104,7 +104,7 @@ namespace Projet.Controllers
             }
 
             var interview = _context.Interviews.Include(i => i.JobApplication).FirstOrDefault(i => i.InterviewId == model.InterviewId);
-            if (interview == null || interview.Status != "Scheduled")
+            if (interview == null || interview.Status != "Interviewed")
             {
                 return NotFound();
             }
@@ -129,8 +129,10 @@ namespace Projet.Controllers
 
             // Update the interview status to "Cancelled"
             interview.Status = "Cancelled";
-            interview.JobApplication.Status = "Cancelled"; // Update job application status
-
+            if (interview.JobApplication != null)
+            {
+                interview.JobApplication.Status = "Rejected"; // Update job application status
+            }
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));

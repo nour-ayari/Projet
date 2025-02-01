@@ -89,11 +89,28 @@
                         <!-- Provide Feedback button -->
                         <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-primary btn-sm">Give Feedback</a>
                     }
-                    else if (item.Status == "Need Decision")
+                    else @if (item.Status == "Need Decision")
                     {
-                        <!-- Button to navigate to Job Applications page -->
-                        <a asp-controller="JobApplications" asp-action="Index" class="btn btn-secondary btn-sm">Go to Job Applications</a>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <!-- Accept Button -->
+                            <form asp-action="Accept" method="post">
+                                    @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.InterviewId" />
+                                <button type="submit" class="btn btn-success btn-sm">✔ Accept</button>
+                            </form>
+
+                            <!-- Reject Button -->
+                            <form asp-action="Reject" method="post">
+                                    @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.InterviewId" />
+                                <button type="submit" class="btn btn-danger btn-sm">✖ Reject</button>
+                            </form>
+                        </div>
+                    </td>
                     }
+
+
                 </td>
             </tr>
         }
