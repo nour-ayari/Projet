@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<Projet.Models.Interview>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Interviews";
+    var currentDate = DateTime.Now;
 }
 
 <h1>Interviews</h1>
@@ -52,7 +53,7 @@
                     }
                     else if ((item.Status == "Pending") | (item.Status == "Interview Cancelled"))
                     {
-                        <span class=" text-primary">@item.Status</span>
+                        <span class="text-primary">@item.Status</span>
                     }
                     else
                     {
@@ -67,35 +68,31 @@
 
                     @if (item.Status == "Scheduled")
                     {
-                        if (item.ScheduledDate <= DateTime.Now)
+                        if (item.ScheduledDate > currentDate)
                         {
-                            <!-- Interview is scheduled and the date is in the past -->
+                            <!-- Buttons for Scheduled and future date -->
                             <a asp-action="ChangeDate" asp-route-id="@item.InterviewId" class="btn btn-warning btn-sm">Change Date</a>
                             <form asp-action="Cancel" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
                                 <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
                             </form>
+                        }
+                        else
+                        {
+                            <!-- Buttons for Scheduled and past date -->
                             <form asp-action="MarkAsInterviewed" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-info btn-sm">Mark as Interviewed</button>
+                                <button type="submit" class="btn btn-success btn-sm">Mark as Interviewed</button>
                             </form>
                         }
-                       
                     }
                     else if (item.Status == "Interviewed")
                     {
                         <!-- Provide Feedback button -->
-                        <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-success btn-sm">Provide Feedback</a>
+                        <a asp-action="GiveFeedback" asp-route-id="@item.InterviewId" class="btn btn-primary btn-sm">Give Feedback</a>
                     }
                     else if (item.Status == "Need Decision")
                     {
-                        <!-- Accept button -->
-                        <form asp-action="Accept" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
-                        </form>
-
-                        <!-- Reject button -->
-                        <form asp-action="Reject" asp-route-id="@item.InterviewId" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                        </form>
+                        <!-- Button to navigate to Job Applications page -->
+                        <a asp-controller="JobApplications" asp-action="Index" class="btn btn-secondary btn-sm">Go to Job Applications</a>
                     }
                 </td>
             </tr>

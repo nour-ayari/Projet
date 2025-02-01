@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Projet.Data;
@@ -16,12 +15,13 @@ namespace Projet.Controllers
         {
             _context = context;
         }
+
         // GET: Interviews
         public IActionResult Index(string filter)
         {
             var interviews = _context.Interviews
-                .Include(i => i.JobApplication) 
-                .AsQueryable(); 
+                .Include(i => i.JobApplication)
+                .AsQueryable();
 
             switch (filter)
             {
@@ -37,7 +37,6 @@ namespace Projet.Controllers
 
             return View(interviews.ToList());
         }
-
 
         // GET: Interviews/ChangeDate/5
         public IActionResult ChangeDate(int id)
@@ -111,49 +110,53 @@ namespace Projet.Controllers
             }
 
             interview.Feedback = model.Feedback;
-            interview.Status = "Need Decision"; // Change job application status
-            interview.JobApplication.Status = "Need Decision";
+            interview.Status = "Need Decision"; // Change interview status
+            interview.JobApplication.Status = "Need Decision"; // Update job application status
 
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
+
+        // POST: Interviews/Cancel/5
         public IActionResult Cancel(int id)
         {
-            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            var interview = _context.Interviews.Include(i => i.JobApplication).FirstOrDefault(i => i.InterviewId == id);
             if (interview == null || interview.Status != "Scheduled")
             {
                 return NotFound();
             }
 
             // Update the interview status to "Cancelled"
-
             interview.Status = "Cancelled";
-            var jobApplication = interview.JobApplication;
+            interview.JobApplication.Status = "Cancelled"; // Update job application status
 
             _context.SaveChanges();
 
-            // Redirect to the Index action to refresh the page
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
+
+        // GET: Interviews/InterviewDetails/5
         public IActionResult InterviewDetails(int id)
         {
             var interview = _context.Interviews
                 .Include(i => i.JobApplication)
                 .ThenInclude(ja => ja.Job)
-                .FirstOrDefault(i => i.InterviewId== id);
+                .FirstOrDefault(i => i.InterviewId == id);
 
             if (interview == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-            return View(interview); 
+            return View(interview);
         }
+
+        // POST: Interviews/MarkAsInterviewed/5
         [HttpPost]
         public IActionResult MarkAsInterviewed(int id)
         {
-            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            var interview = _context.Interviews.Include(i => i.JobApplication).FirstOrDefault(i => i.InterviewId == id);
             if (interview == null || interview.Status != "Scheduled")
             {
                 return NotFound();
@@ -161,17 +164,18 @@ namespace Projet.Controllers
 
             // Update the interview status to "Interviewed"
             interview.Status = "Interviewed";
-            var jobApplication = interview.JobApplication;
-            jobApplication.Status = "Interviewed";
+            interview.JobApplication.Status = "Interviewed"; // Update job application status
+
             _context.SaveChanges();
 
-            // Redirect to the Index page
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
+
+        // POST: Interviews/Accept/5
         [HttpPost]
         public IActionResult Accept(int id)
         {
-            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            var interview = _context.Interviews.Include(i => i.JobApplication).FirstOrDefault(i => i.InterviewId == id);
             if (interview == null || interview.Status != "Need Decision")
             {
                 return NotFound();
@@ -179,17 +183,18 @@ namespace Projet.Controllers
 
             // Update the interview status to "Accepted"
             interview.Status = "Accepted";
-            var jobApplication = interview.JobApplication;
-            jobApplication.Status = "Accepted";
+            interview.JobApplication.Status = "Accepted"; // Update job application status
+
             _context.SaveChanges();
 
-            // Redirect to the Index page
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
+
+        // POST: Interviews/Reject/5
         [HttpPost]
         public IActionResult Reject(int id)
         {
-            var interview = _context.Interviews.FirstOrDefault(i => i.InterviewId == id);
+            var interview = _context.Interviews.Include(i => i.JobApplication).FirstOrDefault(i => i.InterviewId == id);
             if (interview == null || interview.Status != "Need Decision")
             {
                 return NotFound();
@@ -197,14 +202,11 @@ namespace Projet.Controllers
 
             // Update the interview status to "Rejected"
             interview.Status = "Rejected";
-            var jobApplication = interview.JobApplication;
-            jobApplication.Status = "Rejected";
+            interview.JobApplication.Status = "Rejected"; // Update job application status
+
             _context.SaveChanges();
 
-            // Redirect to the Index page
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
-
-}    
-       
+}
