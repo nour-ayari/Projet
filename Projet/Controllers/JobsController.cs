@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
@@ -11,6 +12,8 @@ using Projet.Models;
 
 namespace Projet.Controllers
 {
+    [Authorize]
+
     public class JobsController : Controller
     {
         private readonly ApplicationDbContext _context;
