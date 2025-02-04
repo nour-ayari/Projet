@@ -5,7 +5,7 @@
 namespace Projet.Migrations
 {
     /// <inheritdoc />
-    public partial class m1 : Migration
+    public partial class resetting : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

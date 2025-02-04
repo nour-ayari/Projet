@@ -5,7 +5,7 @@
 namespace Projet.Migrations
 {
     /// <inheritdoc />
-    public partial class m2 : Migration
+    public partial class addedAUTH3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
