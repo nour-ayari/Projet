@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Projet.Data;
 using System.Net.Mail;
 using Microsoft.Build.Evaluation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Projet.Controllers
 {
+    [Authorize]
     public class JobApplicationsController : Controller
     {
         private readonly ApplicationDbContext _context;

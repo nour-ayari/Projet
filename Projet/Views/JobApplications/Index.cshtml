@@ -41,6 +41,7 @@
 }
 else
 {
+    <div class="job-table">
     <table class="table">
         <thead>
             <tr>
@@ -70,9 +71,9 @@ else
                     <td>
                         @if ((item.Status == "Pending") | (item.Status == "Interview Cancelled"))
                         {
-                            <a asp-action="Schedule" asp-route-id="@item.JobApplicationId" class="btn btn-primary btn-sm">Schedule Interview</a>
+                                <a asp-action="Schedule" asp-route-id="@item.JobApplicationId" class="btn btn-primary btn-sm">Schedule</a>
                             <span>|</span>
-                            <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">Reject</a>
+                                <a asp-action="Reject" asp-route-id="@item.JobApplicationId" class="btn btn-danger btn-sm">  <i class="fas fa-times"></i> Reject</a>
                         }
                         else if (item.Status == "Scheduled")
                         {
@@ -92,4 +93,5 @@ else
             }
         </tbody>
     </table>
+    </div>
 }

@@ -1,0 +1,128 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #f0f4f8;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    width: 796px;
+    height: 515px;
+    background: rgba(142, 202, 230, 0.54);
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.left-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+    .left-column img {
+        max-width: 100%;
+        height: auto;
+    }
+
+.right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+}
+
+.welcome-back {
+    color: #023047;
+    font-size: 40px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    width: 120%;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        color: #023047;
+        margin-bottom: 5px;
+    }
+
+    .form-group input {
+       
+        padding: 0;
+        border: 1px solid #ccc;
+        border-radius: 4px 4px 0px 0px;
+        background: rgba(33, 33, 33, 0.08);
+        font-size: 14px;
+        color: #126782;
+    }
+
+        .form-group input::placeholder {
+            color: #999; 
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #023047;
+        }
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 70%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #126782;
+}
+
+.login-button {
+    display: flex;
+    width: 134px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background: #FFB703;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .login-button:hover {
+        background-color: #D89A01;
+    }
+
+.forgot-password {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #023047;
+    text-decoration: none;
+}
+
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
+
+.validation-error {
+    color: #ff0000;
+    font-size: 12px;
+    margin-top: 5px;
+}

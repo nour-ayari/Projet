@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Projet.Data;
@@ -7,6 +8,7 @@ using Projet.Models;
 
 namespace Projet.Controllers
 {
+    [Authorize]
     public class InterviewsController : Controller
     {
         private readonly ApplicationDbContext _context;
