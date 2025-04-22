@@ -1,10 +1,1 @@
-## TO DO 
-### cc c eya hedhom eli metfakrethom you can add whatever you think important w lezem nzidouh 
-- authentification + google authentification
-- mail sending (google / updates acceptance ... )
-- generation of link google meet
-- classify resumes
-- design of the other pages kima lfigma
-- actions : filter of the interviews and job applications based on the status **done**
-- filter of the job applications based on the job **done**
-- fazet les resumes 
+Ce projet été réalisé dans le cadre de nos études en utilisant la technologie **.NET**. Il vise à implémenter le **module RH d’un système ERP**, en se concentrant sur **la gestion du recrutement et des talents**. L'application permet de centraliser les offres d’emploi, de suivre les candidatures et de faciliter le processus de sélection, dans le but d’optimiser la gestion des ressources humaines.
